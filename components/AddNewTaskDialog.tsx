@@ -35,6 +35,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { addNewTask } from "@/actions/actions";
 import Spinner from "./Spinner";
+import { toast } from "sonner";
 
 function AddNewTaskDialog({
   children,
@@ -147,6 +148,16 @@ function AddNewTaskDialog({
       const result = await addNewTask({ task });
 
       if (result) {
+        toast(
+          <div>
+            <h1 className="text-xl font-serif">New Task has been created</h1>
+<br />
+            <h2 className="text-md font-semibold">{taskName}</h2>
+            <p>{taskDescription}</p>
+            <span className="text-md font-semibold">Created At: {format(new Date(), 'yyyy-MM-dd HH:mm:ss')}</span>
+          </div>
+        );
+
         setTaskName("");
         setTaskDescription("");
         setOpen(false);

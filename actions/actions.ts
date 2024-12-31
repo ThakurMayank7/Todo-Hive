@@ -56,3 +56,24 @@ export async function addNewTask({ task }: { task: Task }): Promise<boolean> {
     return false;
   }
 }
+
+interface User {
+  uid: string;
+  email: string;
+  name: string;
+  photoUrl: string;
+};
+
+export async function createNewUser(newUser: User): Promise<boolean> {
+  if (!newUser.uid) {
+    console.error("Error: User must have a UID.");
+    return false;
+  }
+  try {
+    await adminDb.collection("users").doc(newUser.uid).set(newUser);
+    return true;
+  } catch (error) {
+    console.error("Could'nt create a new user", error);
+    return false;
+  }
+}
