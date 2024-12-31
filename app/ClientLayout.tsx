@@ -7,6 +7,8 @@ import { db } from "@/firebase/firebaseConfig";
 import { useAuth } from "@/hooks/useAuth";
 import { doc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 interface Task {
   uid: string;
@@ -39,7 +41,7 @@ function ClientLayout({
 
   useEffect(() => {
     if (user && !initialFetched) {
-      console.log('reached here 1')
+      console.log("reached here 1");
       setInitialFetched(true);
       // Real-time listener
       const unsubscribe = onSnapshot(
@@ -78,16 +80,17 @@ function ClientLayout({
 
   return (
     <>
-      {user && !loading && <Header />}
-      <main className="flex flex-row mt-2 h-screen w-screen">
-        <>
-          <Sidebar />
-        </>
-
-        <div className="mx-2 bg-teal-600 border-2 border-teal-900 flex-1 p-4 rounded-lg shadow-lg shadow-black h-full w-full">
-          <>{children}</>
-        </div>
-      </main>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        {user && !loading && <Header />}
+        <main className="flex flex-row mt-2 h-screen w-screen">
+          <>
+            <Sidebar />
+          </>
+          <div className="mx-2 bg-teal-600 border-2 border-teal-900 flex-1 p-4 rounded-lg shadow-lg shadow-black h-full w-full">
+            <>{children}</>
+          </div>
+        </main>
+      </LocalizationProvider>
     </>
   );
 }

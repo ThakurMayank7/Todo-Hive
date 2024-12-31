@@ -24,9 +24,8 @@ import {
 import { addDays, format } from "date-fns";
 import { Calendar as CalendarIcon, Dot } from "lucide-react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+// import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -36,6 +35,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { addNewTask } from "@/actions/actions";
 import Spinner from "./Spinner";
 import { toast } from "sonner";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs, { Dayjs } from "dayjs";
+import { TextField } from "@mui/material";
 
 function AddNewTaskDialog({
   children,
@@ -58,7 +60,7 @@ function AddNewTaskDialog({
     { tag: "Try it", selected: false },
   ]);
 
-  const [dueDate, setDueDate] = useState<Date>();
+  const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
 
   const [subTasksOpen, setSubTasksOpen] = useState<boolean>(false);
 
@@ -67,6 +69,11 @@ function AddNewTaskDialog({
   const [subTaskInput, setSubTaskInput] = useState<string>("");
 
   const [creating, setCreating] = useState<boolean>(false);
+
+  const handleDateChange = (newValue: Dayjs | null) => {
+    // Convert Dayjs to Date if a valid date is selected, otherwise set undefined
+    setDueDate(newValue ? newValue.toDate() : undefined);
+  };
 
   const handleTagSelection = (currTag: string) => {
     const temp: { tag: string; selected: boolean }[] = [];
@@ -175,7 +182,11 @@ function AddNewTaskDialog({
 
   return (
     <div className="w-full">
-      <Dialog open={open} onOpenChange={(isOpen) => setOpen(isOpen)}>
+      <Dialog
+        modal={false}
+        open={open}
+        onOpenChange={(isOpen) => setOpen(isOpen)}
+      >
         <DialogTrigger asChild onClick={() => setOpen(true)}>
           {children}
         </DialogTrigger>
@@ -219,7 +230,6 @@ function AddNewTaskDialog({
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
-
                 <div>
                   <label
                     htmlFor="description"
@@ -239,7 +249,6 @@ function AddNewTaskDialog({
                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   />
                 </div>
-
                 <div>
                   <label
                     htmlFor="name"
@@ -271,9 +280,7 @@ function AddNewTaskDialog({
                     </SelectContent>
                   </Select>
                 </div>
-
                 {/* Tags */}
-
                 <div>
                   <label
                     htmlFor="name"
@@ -299,34 +306,32 @@ function AddNewTaskDialog({
                   </div>
                 </div>
                 <button>Add New Tag</button>
-
                 {/* Due Data */}
-
                 <div>
                   <label
                     htmlFor="name"
                     className="block text-sm font-medium text-gray-600 mb-2"
                   >
-                    Due Date :
+                    Due Date :{dueDate !== undefined ? dueDate.getDate() : ""}
                   </label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
-                        className={cn(
-                          "w-[280px] justify-start text-left font-normal",
+                        className={`w-[280px] justify-start text-left font-normal ${
                           !dueDate && "text-muted-foreground"
-                        )}
+                        }`}
                       >
                         <CalendarIcon />
                         {dueDate ? (
-                          format(dueDate, "PPP")
+                          dayjs(dueDate).format("MMMM D, YYYY") // Improved date formatting
                         ) : (
                           <span>Pick a date</span>
                         )}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+                      Select Component
                       <Select
                         onValueChange={(value) =>
                           setDueDate(addDays(new Date(), parseInt(value)))
@@ -342,19 +347,23 @@ function AddNewTaskDialog({
                           <SelectItem value="7">In a week</SelectItem>
                         </SelectContent>
                       </Select>
+                      Date Picker Component
                       <div className="rounded-md border">
-                        <Calendar
-                          mode="single"
-                          selected={dueDate}
-                          onSelect={setDueDate}
+                        <DatePicker
+                          label="Select a Date"
+                          value={dueDate ? dayjs(dueDate) : null} // Convert Date to Dayjs for the picker
+                          onChange={handleDateChange} // Handle date change
+                          // Use TextField directly instead of renderInput
+                          slots={{
+                            textField: TextField, // This replaces renderInput
+                          }}
+                          format="MM/DD/YYYY"
                         />
                       </div>
                     </PopoverContent>
                   </Popover>
                 </div>
-
-                {/* Sub Tasks */}
-
+                Sub Tasks
                 <div>
                   {subTasks &&
                     subTasks.map((task) => (
@@ -364,7 +373,6 @@ function AddNewTaskDialog({
                       </div>
                     ))}
                 </div>
-
                 <Dialog
                   open={subTasksOpen}
                   onOpenChange={(isOpen) => setSubTasksOpen(isOpen)}
@@ -425,7 +433,6 @@ function AddNewTaskDialog({
                     </div>
                   </DialogContent>
                 </Dialog>
-
                 <div className="flex items-center justify-center">
                   <button
                     className="bg-teal-200 w-full p-4 rounded border border-black hover:bg-teal-500 hover:font-bold font-semibold"
