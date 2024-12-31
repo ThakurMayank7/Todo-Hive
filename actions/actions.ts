@@ -1,6 +1,8 @@
 "use server";
 
 import { adminDb } from "@/firebase/admin";
+import { db } from "@/firebase/firebaseConfig";
+import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 
 interface Task {
   uid: string;
@@ -19,7 +21,12 @@ export async function addNewTask(task: Task): Promise<boolean> {
     return false;
   }
   try {
-    await adminDb.collection("tasks").add(task);
+    const taskRef=await adminDb.collection("tasks").add(task);
+
+    await updateDoc(doc(db,'userData'),{
+      tasks:arrayUnion(taskRef.id),
+    })
+
 
     return true;
   } catch (error) {

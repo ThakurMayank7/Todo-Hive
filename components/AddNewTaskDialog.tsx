@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 
 import {
   Dialog,
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 
 import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Dot } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -32,12 +32,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useAuth } from "@/hooks/useAuth";
+
+interface Task {
+  uid: string;
+  taskName: string;
+  taskDescription?: string;
+  list: string;
+  dueDate: Date;
+  tags?: string[];
+  subTasks?: { sTask: string; sStatus: boolean }[];
+  status: boolean;
+}
 
 function AddNewTaskDialog({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const {user}=useAuth();
+
   const [open, setOpen] = useState(false);
 
   const [taskName, setTaskName] = useState<string>("");
@@ -53,6 +68,12 @@ function AddNewTaskDialog({
   ]);
 
   const [dueDate, setDueDate] = useState<Date>();
+
+  const [subTasksOpen, setSubTasksOpen] = useState<boolean>(false);
+
+  const [subTasks, setSubTasks] = useState<string[]>([]);
+
+  const [subTaskInput, setSubTaskInput] = useState<string>("");
 
   const handleTagSelection = (currTag: string) => {
     const temp: { tag: string; selected: boolean }[] = [];
@@ -71,7 +92,50 @@ function AddNewTaskDialog({
     setTags(temp);
   };
 
-  const handleSubmit = () => {};
+  const addNewSubTask = () => {
+    if (
+      subTaskInput !== "" &&
+      subTasks.filter((t) => t === subTaskInput).length === 0
+    ) {
+      setSubTasks((prev) => [...prev, subTaskInput]);
+      setSubTaskInput("");
+    }
+  };
+
+  const handleSubTaskDelete = (currSubTask: string) => {
+    const updatedSubTasks = subTasks.filter(
+      (subTask) => subTask !== currSubTask
+    );
+
+    setSubTasks(updatedSubTasks);
+  };
+
+  const handleSubmit = (e:FormEvent) => {
+    e.preventDefault();
+
+    if(taskName && list && dueDate && user)
+    {
+
+      const task:Task={
+        uid:user?.uid,
+        taskName:taskName,
+        list:list,
+        dueDate:dueDate,
+        status:false,
+      }
+
+      if(taskDescription!=="")
+      {
+        task.taskDescription=taskDescription;
+      }
+      if()
+      
+      
+      setTaskName("")
+      setTaskDescription("")
+      setOpen(false)
+    }
+  };
 
   return (
     <div className="w-full">
@@ -194,7 +258,7 @@ function AddNewTaskDialog({
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-600"
+                className="block text-sm font-medium text-gray-600 mb-2"
               >
                 Due Date :
               </label>
@@ -244,12 +308,83 @@ function AddNewTaskDialog({
 
             {/* Sub Tasks */}
 
+            <div>
+              {subTasks &&
+                subTasks.map((task) => (
+                  <div key={task} className="flex flex-row items-center">
+                    <Dot />
+                    {task}
+                  </div>
+                ))}
+            </div>
+
+            <Dialog
+              open={subTasksOpen}
+              onOpenChange={(isOpen) => setSubTasksOpen(isOpen)}
+            >
+              <DialogTrigger asChild onClick={() => setSubTasksOpen(true)}>
+                <div className="flex items-center justify-center">
+                  <button
+                    type="button"
+                    className="bg-teal-400 hover:bg-teal-700 self-center border-2 border-teal-900 rounded text-lg p-2"
+                  >
+                    {subTasks.length === 0 ? "Add " : "Edit "}
+                    SubTasks
+                  </button>
+                </div>
+              </DialogTrigger>
+              <DialogContent
+                className="sm:max-w-lg w-full bg-white p-6 rounded-lg shadow-lg"
+                onInteractOutside={(e) => e.preventDefault()} // Prevent closing on background click
+                onEscapeKeyDown={(e) => e.preventDefault()} // Prevent closing on Esc
+              >
+                <DialogHeader>
+                  <DialogTitle>Add New Task</DialogTitle>
+                  <DialogDescription>
+                    Enter the task details below:
+                  </DialogDescription>
+                </DialogHeader>
+
+                {subTasks &&
+                  subTasks.map((task) => (
+                    <div key={task} className="flex flex-row items-center">
+                      <Dot />
+                      {task}
+                      <button
+                        className="ml-auto bg-red-600 text-white p-1 rounded border-black border hover:font-semibold hover:bg-red-700"
+                        onClick={() => handleSubTaskDelete(task)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))}
+                <div className="flex flex-row gap-2">
+                  <input
+                    type="text"
+                    id="subTask"
+                    name="subTask"
+                    value={subTaskInput}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setSubTaskInput(e.target.value)
+                    }
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  />
+                  <button
+                    className="bg-teal-300 hover:bg-teal-600 border-2 border-teal-900 hover:font-semibold rounded p-2"
+                    onClick={addNewSubTask}
+                  >
+                    Add
+                  </button>
+                </div>
+              </DialogContent>
+            </Dialog>
 
 
-            
-            <button type="submit" onClick={() => handleSubmit}>
-              Add Task
-            </button>
+            <div className="flex items-center justify-center">
+              <button className="bg-teal-200 w-full p-4 rounded border border-black hover:bg-teal-500 hover:font-bold font-semibold" type="submit" onClick={() => handleSubmit}>
+                Add Task
+              </button>
+            </div>
           </form>
         </DialogContent>
       </Dialog>
