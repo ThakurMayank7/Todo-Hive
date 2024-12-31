@@ -1,8 +1,7 @@
 "use server";
 
 import { adminDb } from "@/firebase/admin";
-import { db } from "@/firebase/firebaseConfig";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 
 interface Task {
   uid: string;
@@ -15,18 +14,41 @@ interface Task {
   status: boolean;
 }
 
-export async function addNewTask(task: Task): Promise<boolean> {
+export async function addNewTask({ task }: { task: Task }): Promise<boolean> {
   if (!task) {
     console.warn("Task Data given is not sufficient");
     return false;
   }
+
+  if (!task.uid || !task.taskName || !task.list || !task.dueDate) {
+    console.warn("Missing required task fields:", task);
+    return false;
+  }
+
   try {
-    const taskRef=await adminDb.collection("tasks").add(task);
+    console.log("Adding task:", task);
 
-    await updateDoc(doc(db,'userData'),{
-      tasks:arrayUnion(taskRef.id),
-    })
+    const taskRef = await adminDb.collection("tasks").add({
+      taskName: task.taskName,
+      uid: task.uid,
+      taskDescription: task.taskDescription,
+      list: task.list,
+      tags: task.tags,
+      subTasks: task.subTasks,
+      status: task.status,
+      dueDate: task.dueDate,
+      createdDate: Timestamp.now(),
+    });
 
+    await adminDb
+      .collection("userData")
+      .doc(task.uid)
+      .set(
+        {
+          tasks: FieldValue.arrayUnion(taskRef.id),
+        },
+        { merge: true }
+      );
 
     return true;
   } catch (error) {
