@@ -69,6 +69,15 @@ export async function createNewUser(newUser: User): Promise<boolean> {
   }
   try {
     await adminDb.collection("users").doc(newUser.uid).set(newUser);
+
+    await adminDb
+      .collection("userData")
+      .doc(newUser.uid)
+      .set({
+        tasks: [],
+        lists: ["Work", "Personal"],
+        tags: ["Urgent", "Important", "Work", "Personal"],
+      });
     return true;
   } catch (error) {
     console.error("Could'nt create a new user", error);

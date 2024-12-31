@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 
 import {
   Dialog,
@@ -38,6 +38,7 @@ import { toast } from "sonner";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { TextField } from "@mui/material";
+import { useUserContext } from "@/context/UserContext";
 
 function AddNewTaskDialog({
   children,
@@ -46,6 +47,23 @@ function AddNewTaskDialog({
 }>) {
   const { user } = useAuth();
 
+  const { userData } = useUserContext();
+
+  const [lists, setLists] = useState<string[]>([]);
+
+  const [tags, setTags] = useState<{ tag: string; selected: boolean }[]>([]);
+  useEffect(() => {
+    setLists(userData?.lists || []);
+
+    if (userData?.tags) {
+      const tags = userData.tags.map((tag) => ({
+        tag,
+        selected: false,
+      }));
+      setTags(tags);
+    }
+  }, [userData]);
+
   const [open, setOpen] = useState(false);
 
   const [taskName, setTaskName] = useState<string>("");
@@ -53,12 +71,6 @@ function AddNewTaskDialog({
   const [taskDescription, setTaskDescription] = useState<string>("");
 
   const [list, setList] = useState<string>("");
-
-  const [tags, setTags] = useState<{ tag: string; selected: boolean }[]>([
-    { tag: "Important", selected: false },
-    { tag: "Skippable", selected: false },
-    { tag: "Try it", selected: false },
-  ]);
 
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
 
@@ -269,13 +281,19 @@ function AddNewTaskDialog({
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>List</SelectLabel>
-                        <SelectItem value="Personal">Personal</SelectItem>
+                        {lists &&
+                          lists.map((list) => (
+                            <SelectItem key={list} value={list}>
+                              {list}
+                            </SelectItem>
+                          ))}
+                        {/* <SelectItem value="Personal">Personal</SelectItem>
                         <SelectItem value="Work">Work</SelectItem>
                         <SelectItem value="Hobby">Hobby</SelectItem>
                         <SelectItem value="Something New">
                           Something New
                         </SelectItem>
-                        <SelectItem value="Trying">Trying</SelectItem>
+                        <SelectItem value="Trying">Trying</SelectItem> */}
                       </SelectGroup>
                     </SelectContent>
                   </Select>
