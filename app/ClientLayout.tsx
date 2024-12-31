@@ -6,7 +6,7 @@ import { useUserContext } from "@/context/UserContext";
 import { db } from "@/firebase/firebaseConfig";
 import { useAuth } from "@/hooks/useAuth";
 import { doc, onSnapshot } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
@@ -37,20 +37,19 @@ function ClientLayout({
 
   const { updateUserData } = useUserContext();
 
-  const [initialFetched, setInitialFetched] = useState<boolean>(false);
+  const updateUserDataRef = useRef(updateUserData);
 
   useEffect(() => {
-    if (user && !initialFetched) {
-      console.log("reached here 1");
-      setInitialFetched(true);
-      // Real-time listener
+    updateUserDataRef.current = updateUserData;
+  }, [updateUserData]);
+
+  useEffect(() => {
+    if (user && !loading) {
       const unsubscribe = onSnapshot(
         doc(db, "userData", user.uid),
         (snapshot) => {
-          console.log("I have reached here");
           if (snapshot.exists()) {
             const data = snapshot.data();
-
             console.log("Snapshot data received:", data);
 
             const userData: UserData = {
@@ -59,20 +58,17 @@ function ClientLayout({
               tags: data.tags || [],
             };
 
-            updateUserData(userData);
+            // Use the current ref to call the function
+            updateUserDataRef.current(userData);
           } else {
             console.warn("No userData found for the user.");
           }
-        },
-        (error) => {
-          console.error("Error listening to userData:", error);
         }
       );
 
-      // Cleanup on unmount
       return () => unsubscribe();
     }
-  }, [user, updateUserData, initialFetched]);
+  }, [user, loading]);
 
   if (loading) {
     return <p>loading...</p>;
