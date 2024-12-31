@@ -26,8 +26,6 @@ export async function addNewTask({ task }: { task: Task }): Promise<boolean> {
   }
 
   try {
-    console.log("Adding task:", task);
-
     const taskRef = await adminDb.collection("tasks").add({
       taskName: task.taskName,
       uid: task.uid,
@@ -62,7 +60,7 @@ interface User {
   email: string;
   name: string;
   photoUrl: string;
-};
+}
 
 export async function createNewUser(newUser: User): Promise<boolean> {
   if (!newUser.uid) {

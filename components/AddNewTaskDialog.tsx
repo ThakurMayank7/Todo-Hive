@@ -151,10 +151,12 @@ function AddNewTaskDialog({
         toast(
           <div>
             <h1 className="text-xl font-serif">New Task has been created</h1>
-<br />
+            <br />
             <h2 className="text-md font-semibold">{taskName}</h2>
             <p>{taskDescription}</p>
-            <span className="text-md font-semibold">Created At: {format(new Date(), 'yyyy-MM-dd HH:mm:ss')}</span>
+            <span className="text-md font-semibold">
+              Created At: {format(new Date(), "yyyy-MM-dd HH:mm:ss")}
+            </span>
           </div>
         );
 
@@ -258,11 +260,13 @@ function AddNewTaskDialog({
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>List</SelectLabel>
-                        <SelectItem value="apple">Personal</SelectItem>
-                        <SelectItem value="banana">Work</SelectItem>
-                        <SelectItem value="blueberry">Hobby</SelectItem>
-                        <SelectItem value="grapes">Something New</SelectItem>
-                        <SelectItem value="pineapple">Trying</SelectItem>
+                        <SelectItem value="Personal">Personal</SelectItem>
+                        <SelectItem value="Work">Work</SelectItem>
+                        <SelectItem value="Hobby">Hobby</SelectItem>
+                        <SelectItem value="Something New">
+                          Something New
+                        </SelectItem>
+                        <SelectItem value="Trying">Trying</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
