@@ -84,3 +84,29 @@ export async function createNewUser(newUser: User): Promise<boolean> {
     return false;
   }
 }
+
+export async function addNewList(
+  listName: string,
+  userId: string
+): Promise<boolean> {
+  if (!listName) {
+    console.error("listName not provided");
+    return false;
+  }
+  try {
+    await adminDb
+      .collection("userData")
+      .doc(userId)
+      .set(
+        {
+          lists: FieldValue.arrayUnion(listName),
+        },
+        { merge: true }
+      );
+
+    return true;
+  } catch (error) {
+    console.error("Could'nt create a new list", error);
+    return false;
+  }
+}

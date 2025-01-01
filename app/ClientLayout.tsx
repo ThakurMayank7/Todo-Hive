@@ -9,7 +9,7 @@ import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useRef } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Task, UserData } from "@/lib/types";
+import { Task } from "@/lib/types";
 
 function ClientLayout({
   children,
