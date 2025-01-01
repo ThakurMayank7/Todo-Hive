@@ -1,16 +1,25 @@
 'use client';
 
 import { useUserContext } from '@/context/UserContext';
-import React from 'react'
+import { Task } from '@/lib/types';
+import React, { useEffect, useState } from 'react'
 
 function RecentlyAddedTasks() {
+  
+  const { userData } = useUserContext();
 
-  const {userData}=useUserContext();
+  
+
   return (
-    <div>RecentlyAddedTasks
+    <div>
+      <h1>User Data:</h1>
 
-{userData && userData.tasks.length+""}
+{userData?.tasks.map(task=>(
+  <div key={task.taskId}>{task.taskName}</div>
+))}
 
+
+      <pre>{JSON.stringify(userData, null, 2)}</pre>
     </div>
   )
 }

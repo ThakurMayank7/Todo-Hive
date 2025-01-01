@@ -1,27 +1,17 @@
 "use client";
 
+import { UserData } from "@/lib/types";
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-interface Task {
-  uid: string;
-  taskName: string;
-  taskDescription?: string;
-  list: string;
-  dueDate: Date;
-  tags?: string[];
-  subTasks?: { sTask: string; sStatus: boolean }[];
-  status: boolean;
-  createdAt: Date;
-}
-
-interface UserData {
-  tasks: Task[];
-  lists: string[];
-  tags: string[];
-}
+// Helper function to create default user data
+const createDefaultUserData = (): UserData => ({
+  tasks: [],
+  lists: [],
+  tags: [],
+});
 
 interface UserContextType {
-  userData: UserData | null; // Renamed to match your implementation
+  userData: UserData | null;
   setUserData: (user: UserData | null) => void;
   updateUserData: (userData: Partial<UserData>) => void;
 }
@@ -33,21 +23,24 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [userData, setUserData] = useState<UserData | null>(null);
 
-  // Update user data with partial fields, ensuring the fields are non-undefined
-  const updateUserData = (userData: Partial<UserData>) => {
+  const updateUserData = (newData: Partial<UserData>) => {
     setUserData((prevUserData) => {
       if (!prevUserData) {
-        // If there's no existing user, set the user as the updated one
-        return { tasks: [], lists: [], tags: [], ...userData };
+        // Initialize with default values and the new data
+        return { ...createDefaultUserData(), ...newData };
       }
-
-      // Return the updated user with fallback values to prevent undefined fields
+  
+      // Merge existing state with new data, ensuring no fields are overwritten by undefined
       return {
         ...prevUserData,
-        ...userData,
+        ...newData,
+        tasks: newData.tasks ?? prevUserData.tasks,
+        lists: newData.lists ?? prevUserData.lists,
+        tags: newData.tags ?? prevUserData.tags,
       };
     });
   };
+  
 
   return (
     <UserContext.Provider value={{ userData, setUserData, updateUserData }}>
