@@ -13,6 +13,8 @@ import {
 import Spinner from "./Spinner";
 import { useAuth } from "@/hooks/useAuth";
 import { addNewTag } from "@/actions/actions";
+import { toast } from "sonner";
+import { format } from "date-fns";
 
 function AddNewTagDialog({
   children,
@@ -44,6 +46,16 @@ function AddNewTagDialog({
       });
 
       if (result) {
+        toast(
+          <div>
+            <h1 className="text-xl font-serif">New Tag has been created</h1>
+            <h2 className="text-lg font-semibold my-4">{tagName}</h2>
+            <p className="">
+              Created At: {format(new Date(), "yyyy-MM-dd HH:mm:ss")}
+            </p>
+          </div>
+        );
+
         setTagName("");
         setOpen(false);
       }

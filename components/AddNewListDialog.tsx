@@ -13,6 +13,8 @@ import {
 import Spinner from "./Spinner";
 import { addNewList } from "@/actions/actions";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
+import { format } from "date-fns";
 
 function AddNewListDialog({
   children,
@@ -44,6 +46,16 @@ function AddNewListDialog({
       });
 
       if (result) {
+        toast(
+          <div>
+            <h1 className="text-xl font-serif">New List has been created</h1>
+            <h2 className="text-lg font-semibold my-4">{listName}</h2>
+            <p className="">
+              Created At: {format(new Date(), "yyyy-MM-dd HH:mm:ss")}
+            </p>
+          </div>
+        );
+
         setListName("");
         setOpen(false);
       }
