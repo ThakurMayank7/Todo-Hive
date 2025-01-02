@@ -6,10 +6,11 @@ import { useUserContext } from "@/context/UserContext";
 import { db } from "@/firebase/firebaseConfig";
 import { useAuth } from "@/hooks/useAuth";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Task } from "@/lib/types";
+import Spinner from "@/components/Spinner";
 
 function ClientLayout({
   children,
@@ -22,12 +23,15 @@ function ClientLayout({
 
   const updateUserDataRef = useRef(updateUserData);
 
+  const [fetching, setFetching] = useState<boolean>(false);
+
   useEffect(() => {
     updateUserDataRef.current = updateUserData;
   }, [updateUserData]);
 
   useEffect(() => {
     if (user && !loading) {
+      setFetching(true);
       const unsubscribe = onSnapshot(
         doc(db, "userData", user.uid),
         async (snapshot) => {
@@ -80,6 +84,7 @@ function ClientLayout({
               lists: data.lists || [],
               tags: data.tags || [],
             });
+            setFetching(false);
           } else {
             console.warn("No userData found for the user.");
           }
@@ -89,8 +94,12 @@ function ClientLayout({
       return () => unsubscribe();
     }
   }, [user, loading]);
-  if (loading) {
-    return <p>loading...</p>;
+  if (loading || fetching) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
   }
 
   return (
