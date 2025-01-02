@@ -85,10 +85,13 @@ export async function createNewUser(newUser: User): Promise<boolean> {
   }
 }
 
-export async function addNewList(
-  listName: string,
-  userId: string
-): Promise<boolean> {
+export async function addNewList({
+  listName,
+  userId,
+}: {
+  listName: string;
+  userId: string;
+}): Promise<boolean> {
   if (!listName) {
     console.error("listName not provided");
     return false;
@@ -107,6 +110,34 @@ export async function addNewList(
     return true;
   } catch (error) {
     console.error("Could'nt create a new list", error);
+    return false;
+  }
+}
+export async function addNewTag({
+  tagName,
+  userId,
+}: {
+  tagName: string;
+  userId: string;
+}): Promise<boolean> {
+  if (!tagName) {
+    console.error("tagName not provided");
+    return false;
+  }
+  try {
+    await adminDb
+      .collection("userData")
+      .doc(userId)
+      .set(
+        {
+          tags: FieldValue.arrayUnion(tagName),
+        },
+        { merge: true }
+      );
+
+    return true;
+  } catch (error) {
+    console.error("Could'nt create a new tag", error);
     return false;
   }
 }

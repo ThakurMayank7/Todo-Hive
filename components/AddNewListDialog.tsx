@@ -19,8 +19,7 @@ function AddNewListDialog({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  const {user}=useAuth();
+  const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
 
@@ -31,24 +30,28 @@ function AddNewListDialog({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if(!listName || !user){
-      console.warn('missing list name')
+    if (!listName || !user) {
+      console.warn("missing list name");
       return;
     }
 
-    try{
-      setCreating(true)
+    try {
+      setCreating(true);
 
-      const result:boolean=await addNewList(
-        userId:user.
-      )
+      const result: boolean = await addNewList({
+        userId: user.uid,
+        listName: listName,
+      });
 
-      setOpen(false);
-    }
-    catch(error){
+      if (result) {
+        setListName("");
+        setOpen(false);
+      }
+    } catch (error) {
       console.error(error);
+    } finally {
+      setCreating(false);
     }
-
   };
 
   return (
@@ -94,7 +97,7 @@ function AddNewListDialog({
                 <button
                   className="bg-teal-200 w-full p-4 rounded border border-black hover:bg-teal-500 hover:font-bold font-semibold"
                   type="submit"
-                  onClick={() => handleSubmit}
+                  onClick={handleSubmit}
                 >
                   Add List
                 </button>

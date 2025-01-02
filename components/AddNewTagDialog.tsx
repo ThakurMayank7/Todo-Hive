@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react'
+import React, { FormEvent, useState } from "react";
 
 import {
   Dialog,
@@ -10,20 +10,49 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import Spinner from './Spinner';
+import Spinner from "./Spinner";
+import { useAuth } from "@/hooks/useAuth";
+import { addNewTag } from "@/actions/actions";
 
 function AddNewTagDialog({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
+  const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
 
   const [creating, setCreating] = useState<boolean>(false);
 
+  const [tagName, setTagName] = useState<string>("");
 
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!tagName || !user) {
+      console.warn("missing tag name");
+      return;
+    }
+
+    try {
+      setCreating(true);
+
+      const result: boolean = await addNewTag({
+        userId: user.uid,
+        tagName: tagName,
+      });
+
+      if (result) {
+        setTagName("");
+        setOpen(false);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCreating(false);
+    }
+  };
 
   return (
     <div className="w-full">
@@ -47,28 +76,38 @@ function AddNewTagDialog({
           ) : (
             <>
               <DialogHeader>
-                <DialogTitle>Add New Task</DialogTitle>
+                <DialogTitle>Add New List</DialogTitle>
                 <DialogDescription>
-                  Enter the task details below:
+                  Enter the list name below:
                 </DialogDescription>
               </DialogHeader>
 
-                <div className="flex items-center justify-center">
-                  <button
-                    className="bg-teal-200 w-full p-4 rounded border border-black hover:bg-teal-500 hover:font-bold font-semibold"
-                    type="submit"
-                    // onClick={() => handleSubmit}
-                  >
-                    Add Task
-                  </button>
-                </div>
-              
+              <input
+                type="text"
+                id="listName"
+                name="listName"
+                value={tagName}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setTagName(e.target.value)
+                }
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              />
+
+              <div className="flex items-center justify-center">
+                <button
+                  className="bg-teal-200 w-full p-4 rounded border border-black hover:bg-teal-500 hover:font-bold font-semibold"
+                  type="submit"
+                  onClick={handleSubmit}
+                >
+                  Add List
+                </button>
+              </div>
             </>
           )}
         </DialogContent>
       </Dialog>
-      </div>
-  )
+    </div>
+  );
 }
 
-export default AddNewTagDialog
+export default AddNewTagDialog;
