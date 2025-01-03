@@ -141,3 +141,28 @@ export async function addNewTag({
     return false;
   }
 }
+
+export async function updateSubTask({
+  taskId,
+  newSubTasks,
+}: {
+  taskId: string;
+  newSubTasks: { sTask: string; sStatus: boolean }[];
+}): Promise<boolean> {
+  if (!taskId || !newSubTasks) {
+    console.error("taskId or new subtasks not provided");
+    return false;
+  }
+  try {
+    await adminDb.collection("tasks").doc(taskId).set(
+      {
+        subTasks: newSubTasks,
+      },
+      { merge: true }
+    );
+    return true;
+  } catch (error) {
+    console.error("Could'nt update subTask", error);
+    return false;
+  }
+}
