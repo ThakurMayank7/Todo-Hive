@@ -7,12 +7,13 @@ import Lists from "./Lists";
 import { Separator } from "./ui/separator";
 import { useRouter } from "next/navigation";
 import Tags from "./Tags";
+import { ScrollArea } from "./ui/scroll-area";
 
 function Sidebar() {
   const router = useRouter();
 
   return (
-    <div className="h-full bg-teal-600 border-2 border-teal-900 shadow-md shadow-black rounded-r-lg w-60 text-white p-4 flex flex-col">
+    <ScrollArea className="h-full bg-teal-600 border-2 border-teal-900 shadow-md shadow-black rounded-r-lg w-60 text-white p-4 flex flex-col">
       <SearchBar />
       <br />
       <SidebarOptions />
@@ -32,7 +33,7 @@ function Sidebar() {
           Sign Out
         </button>
       </div>
-    </div>
+    </ScrollArea>
   );
 }
 
