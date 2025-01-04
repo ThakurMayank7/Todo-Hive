@@ -7,6 +7,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { createNewUser } from "@/actions/actions";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase/firebaseConfig";
 
 export default function Home() {
   const router = useRouter();
@@ -30,12 +32,16 @@ export default function Home() {
       };
 
       const createAccount = async () => {
-        const result = await createNewUser(newUser);
+        const userSnapshot = await getDoc(doc(db, "users", user.uid));
 
-        if (result) {
-          router.push("/Home");
+        if (userSnapshot.exists()) {
         } else {
-          signOutUser();
+          const result = await createNewUser(newUser);
+          if (result) {
+            router.push("/Home");
+          } else {
+            signOutUser();
+          }
         }
       };
       createAccount();

@@ -31,3 +31,25 @@ export function CheckUpcomingDate(date: Date): boolean {
   // Compare the dates (without time)
   return d1.getTime() >= d2.getTime();
 }
+
+export function CheckDateAfterDays(date: Date, days: number): boolean {
+  const targetDate = new Date();
+  targetDate.setDate(targetDate.getDate() + days);
+
+  return (
+    date.getDate() === targetDate.getDate() &&
+    date.getMonth() === targetDate.getMonth() &&
+    date.getFullYear() === targetDate.getFullYear()
+  );
+}
+
+export function CheckDateBeforeDays(date: Date, days: number): boolean {
+  const targetDate = new Date();
+  targetDate.setDate(targetDate.getDate() - days);
+
+  return (
+    date.getDate() === targetDate.getDate() &&
+    date.getMonth() === targetDate.getMonth() &&
+    date.getFullYear() === targetDate.getFullYear()
+  );
+}
