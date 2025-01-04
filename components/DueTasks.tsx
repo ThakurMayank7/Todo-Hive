@@ -9,13 +9,10 @@ const {userData}=useUserContext();
   return (
     <div className="w-full h-full bg-amber-400 rounded p-2 shadow-sm">DueTasks
     <p className="whitespace-pre-wrap text-8xl font-medium tracking-tighter text-black dark:text-white">
-      <NumberTicker value={userData?.tasks.map((task)=>{
-        
-        
-        
-        return
-        ()
-      })} />
+      <NumberTicker value={userData?.tasks.filter((task)=>{
+        const curr:Date=new Date();
+      }
+      ).length || 0} />
     </p>
     </div>
   );
