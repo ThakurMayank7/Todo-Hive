@@ -12,62 +12,82 @@ function UpcomingTasks() {
 
   return (
     <div className="bg-gray-200 h-full rounded p-2">
-      <ScrollArea className="h-full w-full bg-gray-100 rounded">
-        {userData?.tasks && userData.tasks.length > 0 && (
-          <div className="p-1 border border-black rounded bg-gray-200 px-2">
-            <h1>Today</h1>
-
-            {userData.tasks.map((task: Task) => {
-              const dueDate: Date = task.dueDate;
-
-              if (
-                dueDate.getDate() === new Date().getDate() &&
-                dueDate.getMonth() === new Date().getMonth() &&
-                dueDate.getFullYear() === new Date().getFullYear()
-              )
-                return <TaskDisplay task={task} key={task.taskId} />;
-            })}
-          </div>
-        )}
-        {userData?.tasks && userData.tasks.length > 0 && (
-          <>
-            <Separator className="my-1" />
-            <div className="p-1 border border-black rounded bg-gray-200 px-2">
-              <h1>Tomorrow</h1>
+      <ScrollArea className="h-full w-full bg-gray-200 rounded">
+        {userData?.tasks &&
+          userData.tasks.length > 0 &&
+          userData.tasks.filter(
+            (task) =>
+              task.dueDate.getDate() === new Date().getDate() &&
+              task.dueDate.getMonth() === new Date().getMonth() &&
+              task.dueDate.getFullYear() === new Date().getFullYear()
+          ).length > 0 && (
+            <div className="p-1 border border-black rounded bg-gray-100 px-2">
+              <h1>Today</h1>
 
               {userData.tasks.map((task: Task) => {
                 const dueDate: Date = task.dueDate;
 
                 if (
-                  dueDate.getDate() === new Date().getDate() + 1 &&
+                  dueDate.getDate() === new Date().getDate() &&
                   dueDate.getMonth() === new Date().getMonth() &&
                   dueDate.getFullYear() === new Date().getFullYear()
                 )
                   return <TaskDisplay task={task} key={task.taskId} />;
               })}
             </div>
-          </>
-        )}
-        {userData?.tasks && userData.tasks.length > 0 && (
-          <>
-            <Separator className="my-1" />
-            <div className="p-1 border border-black rounded bg-gray-200 px-2">
-              <h1>Tomorrow</h1>
+          )}
+        {userData?.tasks &&
+          userData.tasks.length > 0 &&
+          userData.tasks.filter(
+            (task) =>
+              task.dueDate.getDate() === new Date().getDate() + 1 &&
+              task.dueDate.getMonth() === new Date().getMonth() &&
+              task.dueDate.getFullYear() === new Date().getFullYear()
+          ).length > 0 && (
+            <>
+              <Separator className="my-1" />
+              <div className="p-1 border border-black rounded bg-gray-100 px-2">
+                <h1>Tomorrow</h1>
 
-              {userData.tasks.map((task: Task) => {
-                const dueDate: Date = task.dueDate;
+                {userData.tasks.map((task: Task) => {
+                  const dueDate: Date = task.dueDate;
 
-                if (
-                  dueDate.getDate() > new Date().getDate() + 2 &&
-                  dueDate.getDate() < new Date().getDate() + 7 &&
-                  dueDate.getMonth() === new Date().getMonth() &&
-                  dueDate.getFullYear() === new Date().getFullYear()
-                )
-                  return <TaskDisplay task={task} key={task.taskId} />;
-              })}
-            </div>
-          </>
-        )}
+                  if (
+                    dueDate.getDate() === new Date().getDate() + 1 &&
+                    dueDate.getMonth() === new Date().getMonth() &&
+                    dueDate.getFullYear() === new Date().getFullYear()
+                  )
+                    return <TaskDisplay task={task} key={task.taskId} />;
+                })}
+              </div>
+            </>
+          )}
+        {userData?.tasks &&
+          userData.tasks.length > 0 &&
+          userData.tasks.filter(
+            (task) =>
+              task.dueDate.getDate() > new Date().getDate() + 2 &&
+              task.dueDate.getDate() < new Date().getDate() + 7 &&
+              task.dueDate.getMonth() === new Date().getMonth() &&
+              task.dueDate.getFullYear() === new Date().getFullYear()
+          ).length > 0 && (
+            <>
+              <Separator className="my-1" />
+              <div className="p-1 border border-black rounded bg-gray-100 px-2">
+                {userData.tasks.map((task: Task) => {
+                  const dueDate: Date = task.dueDate;
+
+                  if (
+                    dueDate.getDate() > new Date().getDate() + 2 &&
+                    dueDate.getDate() < new Date().getDate() + 7 &&
+                    dueDate.getMonth() === new Date().getMonth() &&
+                    dueDate.getFullYear() === new Date().getFullYear()
+                  )
+                    return <TaskDisplay task={task} key={task.taskId} />;
+                })}
+              </div>
+            </>
+          )}
 
         {userData?.tasks && userData.tasks.length === 0 && (
           <div className="h-full flex items-center justify-center">
