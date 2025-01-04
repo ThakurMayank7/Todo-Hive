@@ -41,6 +41,42 @@ function ClientLayout({
 
             if (taskId) {
               console.log("Snapshot data received:", taskId);
+
+              const fetchUpdatedTask = async () => {
+                const taskSnapshot = await getDoc(doc(db, "tasks", taskId));
+
+                if (taskSnapshot.exists()) {
+                  const tasksToPush = userData?.tasks.map((task: Task) => {
+                    if (task.taskId === taskId) {
+                      return {
+                        uid: taskSnapshot.data().uid,
+                        taskName: taskSnapshot.data().taskName,
+                        taskDescription: taskSnapshot.data().taskDescription,
+                        list: taskSnapshot.data().list,
+                        dueDate:
+                          taskSnapshot.data().dueDate?.toDate?.() || null, // Check if `dueDate` exists and is a Firestore Timestamp
+                        tags: taskSnapshot.data().tags,
+                        subTasks: taskSnapshot.data().subTasks,
+                        status: taskSnapshot.data().status,
+                        createdAt:
+                          taskSnapshot.data().createdAt?.toDate?.() ||
+                          new Date(), // Default to current date if missing
+                        taskId,
+                      } as Task;
+                    }
+                    return task;
+                  });
+
+                  console.log(tasksToPush);
+
+                  updateUserDataRef.current({
+                    tasks: tasksToPush,
+                  });
+                }
+
+                console.log(taskSnapshot.data());
+              };
+              fetchUpdatedTask();
             }
           } else {
             console.warn("No updates found for the user.");
