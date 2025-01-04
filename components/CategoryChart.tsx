@@ -30,16 +30,22 @@ function CategoryChart() {
 
   return (
     <div className="flex items-center justify-center h-full">
-      <PieChart
-        className="h-full w-full p-2"
-        series={[
-          {
-            data: data,
-            highlightScope: { fade: "global", highlight: "item" },
-            faded: { innerRadius: 30, additionalRadius: -30, color: "gray" },
-          },
-        ]}
-      />
+      {data.length === 0 || data.filter((d) => d.value !== 0).length === 0 ? (
+        <div className="flex items-center justify-center h-full w-full">
+          <h1>No Active Tasks</h1>
+        </div>
+      ) : (
+        <PieChart
+          className="h-full w-full p-2"
+          series={[
+            {
+              data: data,
+              highlightScope: { fade: "global", highlight: "item" },
+              faded: { innerRadius: 30, additionalRadius: -30, color: "gray" },
+            },
+          ]}
+        />
+      )}
     </div>
   );
 }

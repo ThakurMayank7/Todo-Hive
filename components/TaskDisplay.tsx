@@ -14,6 +14,7 @@ import { Dot } from "lucide-react";
 import React from "react";
 import { IoIosCheckbox } from "react-icons/io";
 import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
+import { toast } from "sonner";
 
 function TaskDisplay({ task }: { task: Task }) {
   const { userData } = useUserContext();
@@ -124,21 +125,49 @@ function TaskDisplay({ task }: { task: Task }) {
                 <div className="ml-auto flex flex-row items-center">
                   {subtask.sStatus ? (
                     <IoIosCheckbox
-                      onClick={() =>
-                        updateSubTasks({
-                          taskId: task.taskId,
-                          subTask: subtask.sTask,
-                        })
-                      }
+                      onClick={() => {
+                        if (task.status === false) {
+                          updateSubTasks({
+                            taskId: task.taskId,
+                            subTask: subtask.sTask,
+                          });
+                        } else {
+                          toast(
+                            <div>
+                              <h1 className="text-xl font-serif">
+                                Task has already been Completed
+                              </h1>
+                              <p className="">
+                                Cannot edit Sub Tasks after a task has been
+                                completed.
+                              </p>
+                            </div>
+                          );
+                        }
+                      }}
                     />
                   ) : (
                     <MdOutlineCheckBoxOutlineBlank
-                      onClick={() =>
-                        updateSubTasks({
-                          taskId: task.taskId,
-                          subTask: subtask.sTask,
-                        })
-                      }
+                      onClick={() => {
+                        if (task.status === false) {
+                          updateSubTasks({
+                            taskId: task.taskId,
+                            subTask: subtask.sTask,
+                          });
+                        } else {
+                          toast(
+                            <div>
+                              <h1 className="text-xl font-serif">
+                                Task has already been Completed
+                              </h1>
+                              <p className="">
+                                Cannot edit Sub Tasks after a task has been
+                                completed.
+                              </p>
+                            </div>
+                          );
+                        }
+                      }}
                     />
                   )}
                 </div>
