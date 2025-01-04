@@ -67,7 +67,7 @@ function UpcomingTasks() {
           userData.tasks.filter(
             (task) =>
               task.dueDate.getDate() > new Date().getDate() + 2 &&
-              task.dueDate.getDate() < new Date().getDate() + 7 &&
+              task.dueDate.getDate() <= new Date().getDate() + 7 &&
               task.dueDate.getMonth() === new Date().getMonth() &&
               task.dueDate.getFullYear() === new Date().getFullYear()
           ).length > 0 && (
@@ -79,7 +79,7 @@ function UpcomingTasks() {
 
                   if (
                     dueDate.getDate() > new Date().getDate() + 2 &&
-                    dueDate.getDate() < new Date().getDate() + 7 &&
+                    dueDate.getDate() <= new Date().getDate() + 7 &&
                     dueDate.getMonth() === new Date().getMonth() &&
                     dueDate.getFullYear() === new Date().getFullYear()
                   )

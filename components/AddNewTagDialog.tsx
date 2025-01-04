@@ -88,16 +88,14 @@ function AddNewTagDialog({
           ) : (
             <>
               <DialogHeader>
-                <DialogTitle>Add New List</DialogTitle>
-                <DialogDescription>
-                  Enter the list name below:
-                </DialogDescription>
+                <DialogTitle>Add New Tag</DialogTitle>
+                <DialogDescription>Enter the Tag below:</DialogDescription>
               </DialogHeader>
 
               <input
                 type="text"
-                id="listName"
-                name="listName"
+                id="tag"
+                name="tag"
                 value={tagName}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setTagName(e.target.value)
