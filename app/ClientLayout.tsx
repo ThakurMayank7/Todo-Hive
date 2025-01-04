@@ -31,62 +31,6 @@ function ClientLayout({
 
   useEffect(() => {
     if (user && !loading) {
-      const unsubscribeUpdateListener = onSnapshot(
-        doc(db, "taskUpdates", user.uid),
-        (snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.data();
-
-            const taskId: string = data.taskId;
-
-            if (taskId) {
-
-              const fetchUpdatedTask = async () => {
-                const taskSnapshot = await getDoc(doc(db, "tasks", taskId));
-
-                if (taskSnapshot.exists()) {
-                  const tasksToPush = userData?.tasks.map((task: Task) => {
-                    if (task.taskId === taskId) {
-                      return {
-                        uid: taskSnapshot.data().uid,
-                        taskName: taskSnapshot.data().taskName,
-                        taskDescription: taskSnapshot.data().taskDescription,
-                        list: taskSnapshot.data().list,
-                        dueDate:
-                          taskSnapshot.data().dueDate?.toDate?.() || null, // Check if `dueDate` exists and is a Firestore Timestamp
-                        tags: taskSnapshot.data().tags,
-                        subTasks: taskSnapshot.data().subTasks,
-                        status: taskSnapshot.data().status,
-                        createdAt:
-                          taskSnapshot.data().createdAt?.toDate?.() ||
-                          new Date(), // Default to current date if missing
-                        taskId,
-                      } as Task;
-                    }
-                    return task;
-                  });
-
-                  updateUserDataRef.current({
-                    tasks: tasksToPush,
-                  });
-                }
-              };
-              fetchUpdatedTask();
-            }
-          } else {
-            console.warn("No updates found for the user.");
-          }
-        },
-        (error) => {
-          console.error("Error listening to taskUpdates:", error);
-        }
-      );
-      return () => unsubscribeUpdateListener();
-    }
-  }, [user, loading]);
-
-  useEffect(() => {
-    if (user && !loading) {
       setFetching(true);
       const unsubscribe = onSnapshot(
         doc(db, "userData", user.uid),
@@ -142,7 +86,72 @@ function ClientLayout({
         }
       );
 
-      return () => unsubscribe();
+      const unsubscribeUpdateListener = onSnapshot(
+        doc(db, "taskUpdates", user.uid),
+        async (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.data();
+            const taskId: string = data.taskId;
+
+            console.log("taskUpdates data:", data);
+            console.log("tasks existing:", userData?.tasks);
+            if (taskId) {
+              try {
+                // Fetch updated task
+                const taskDocRef = doc(db, "tasks", taskId);
+                const taskSnapshot = await getDoc(taskDocRef);
+
+                if (taskSnapshot.exists()) {
+                  const updatedTask = taskSnapshot.data();
+
+                  console.log("Updated task:", updatedTask);
+                  console.log("existing tasks:", userData?.tasks);
+                  const tasksToPush = userData?.tasks.map((task: Task) => {
+                    if (task.taskId === taskId) {
+                      return {
+                        ...task,
+                        uid: updatedTask.uid,
+                        taskName: updatedTask.taskName,
+                        taskDescription: updatedTask.taskDescription,
+                        list: updatedTask.list,
+                        dueDate: updatedTask.dueDate?.toDate?.() || null,
+                        tags: updatedTask.tags,
+                        subTasks: updatedTask.subTasks,
+                        status: updatedTask.status,
+                        createdAt:
+                          updatedTask.createdAt?.toDate?.() || new Date(),
+                        taskId,
+                      };
+                    }
+                    return task;
+                  });
+
+                  console.log("Tasks to push:", tasksToPush);
+
+                  // Update user data
+                  updateUserDataRef.current({
+                    tasks: tasksToPush,
+                  });
+                } else {
+                  console.warn(`Task with ID ${taskId} not found.`);
+                }
+              } catch (error) {
+                console.error("Error fetching updated task:", error);
+              }
+            }
+          } else {
+            console.warn("No updates found for the user.");
+          }
+        },
+        (error) => {
+          console.error("Error listening to taskUpdates:", error);
+        }
+      );
+
+      return () => {
+        unsubscribe();
+        unsubscribeUpdateListener();
+      };
     }
   }, [user, loading]);
   if (loading || fetching) {
