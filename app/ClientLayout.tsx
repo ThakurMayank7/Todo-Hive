@@ -29,6 +29,26 @@ function ClientLayout({
     updateUserDataRef.current = updateUserData;
   }, [updateUserData]);
 
+
+  useEffect(()=>{
+    if(user && !loading){
+      const unsubscribeUpdateListener = onSnapshot(doc(db, "updates", user.uid), (snapshot) => {
+        if(snapshot.exists()){
+          const data = snapshot.data();
+          console.log("Snapshot data received:", data);
+          // updateUserDataRef.current({
+          //   tasks: data.tasks || [],
+          //   lists: data.lists || [],
+          //   tags: data.tags || [],
+          // });
+        }else{
+          console.warn("No updates found for the user.");
+        }
+      });
+      return () => unsubscribeUpdateListener();
+    }
+  },[user,loading])
+
   useEffect(() => {
     if (user && !loading) {
       setFetching(true);
@@ -105,7 +125,7 @@ function ClientLayout({
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <main className="h-screen bg-red-200">
+        <main className="h-screen">
           {user && !loading && <Header />}
           <div className="h-[90vh] pt-2">
             <div className="flex flex-row h-full">

@@ -9,38 +9,50 @@ import { useUserContext } from "@/context/UserContext";
 
 import { IoIosCheckbox } from "react-icons/io";
 import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
-import { updateSubTask } from "@/actions/actions";
+import { notifyUpdates, updateSubTask } from "@/actions/actions";
 import { Task } from "@/lib/types";
+import { useAuth } from "@/hooks/useAuth";
 
 function UpcomingTasks() {
   const { userData } = useUserContext();
 
-  const updateSubTasks = ({
+  const { user } = useAuth();
+
+  const updateSubTasks = async ({
     taskId,
     subTask,
   }: {
     taskId: string;
     subTask: string;
   }) => {
+    const copy: Task[] =
+      userData?.tasks.filter((task: Task) => task.taskId === taskId) || [];
 
-    const copy:Task[]=userData?.tasks.filter((task:Task) => task.taskId === taskId)||[];
+    if (copy !== undefined && copy.length !== 0) {
+      const newSubTasks: { sTask: string; sStatus: boolean }[] =
+        copy[0].subTasks?.map((sub) => {
+          if (sub.sTask === subTask) {
+            sub.sStatus = !sub.sStatus;
+          }
+          return sub;
+        }) || [];
 
-if(copy!==undefined && copy.length!==0){
-  
-  const newSubTasks: { sTask: string; sStatus: boolean }[] = copy[0].subTasks?.map((sub) => {
-    if (sub.sTask === subTask) {
-      sub.sStatus = !sub.sStatus;
+      if (newSubTasks !== undefined && newSubTasks.length !== 0) {
+        await updateSubTask({
+          taskId,
+          newSubTasks,
+        }).then((result) => {
+          if (result && user) {
+            notifyUpdates({
+              userId: user.uid,
+              taskId: taskId,
+              updateMessage: "Subtask updated.",
+            });
+          }
+        });
+      }
     }
-    return sub;
-  })||[];
-
-  if(newSubTasks!==undefined && newSubTasks.length!==0){
-    updateSubTask({
-      taskId,
-      newSubTasks,
-    });
-}
-};}
+  };
 
   return (
     <div className="bg-gray-200 h-full rounded p-2">
@@ -84,7 +96,7 @@ if(copy!==undefined && copy.length!==0){
                     >
                       <span>{subtask.sTask}</span>
                       <div className="ml-auto flex flex-row items-center">
-                        {subtask.sStatus?"true":"false"}
+                        {subtask.sStatus ? "true" : "false"}
                         {subtask.sStatus ? (
                           <IoIosCheckbox
                           // onClick={() => {
@@ -97,7 +109,12 @@ if(copy!==undefined && copy.length!==0){
                           />
                         ) : (
                           <MdOutlineCheckBoxOutlineBlank
-                          onClick={() => updateSubTasks({taskId: task.taskId,subTask: subtask.sTask})}
+                            onClick={() =>
+                              updateSubTasks({
+                                taskId: task.taskId,
+                                subTask: subtask.sTask,
+                              })
+                            }
                           />
                         )}
                       </div>

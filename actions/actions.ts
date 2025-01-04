@@ -166,3 +166,30 @@ export async function updateSubTask({
     return false;
   }
 }
+
+export async function notifyUpdates({
+  userId,
+  updateMessage,
+  taskId,
+}: {
+  userId: string;
+  updateMessage: string;
+  taskId: string;
+}): Promise<boolean> {
+  if (!userId || !updateMessage) {
+    console.error("userId or updateMessage not provided");
+    return false;
+  }
+  try {
+    await adminDb.collection("taskUpdates").doc(userId).set(
+      {
+        taskId: taskId,
+      },
+      { merge: true }
+    );
+    return true;
+  } catch (error) {
+    console.error("Could'nt notify updates", error);
+    return false;
+  }
+}
