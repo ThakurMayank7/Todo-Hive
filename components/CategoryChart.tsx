@@ -13,7 +13,7 @@ function CategoryChart() {
       setData([]);
       userData.lists.forEach((list, index) => {
         const value: number = userData.tasks.filter(
-          (task) => task.list === list
+          (task) => task.list === list && task.status === false
         ).length;
 
         setData((prev) => [
