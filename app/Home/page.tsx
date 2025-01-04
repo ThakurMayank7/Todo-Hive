@@ -26,14 +26,14 @@ function HomePage() {
         </div>
         <div className="w-1/4 flex flex-col gap-4 items-center justify-center">
           <AddNewTaskDialog>
-            <button className="bg-white border-2 border-teal-900 p-4 flex flex-row gap-2 w-full rounded shadow-lg hover:bg-teal-100 hover:font-bold font-semibold items-center justify-center">
+            <button className="bg-white border-2 border-black p-4 flex flex-row gap-2 w-full rounded shadow-lg hover:bg-gray-200 hover:font-bold font-semibold items-center justify-center">
               <Plus />
               Add new task
             </button>
           </AddNewTaskDialog>
 
           <AddNewListDialog>
-            <button className="bg-white border-2 border-teal-900 p-4 flex flex-row gap-2 w-full rounded shadow-lg hover:bg-teal-100 hover:font-bold font-semibold items-center justify-center">
+            <button className="bg-white border-2 border-black p-4 flex flex-row gap-2 w-full rounded shadow-lg hover:bg-gray-200 hover:font-bold font-semibold items-center justify-center">
               <Plus />
               Add new list
             </button>

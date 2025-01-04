@@ -27,7 +27,11 @@ function Tags() {
           userData.tags.map((tag, index) => (
             <button
               key={index}
-              className="bg-white p-1 text-sm rounded border border-black hover:bg-gray-200 hover:font-semibold m-0.5"
+              className={`${
+                tag === "Important"
+                  ? "bg-red-300 hover:bg-red-500"
+                  : "bg-white hover:bg-gray-200"
+              } p-1 text-sm rounded border border-black hover:font-semibold m-0.5`}
             >
               {tag}
             </button>

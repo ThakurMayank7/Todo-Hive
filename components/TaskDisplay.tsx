@@ -1,6 +1,10 @@
 "use client";
 
-import { notifyUpdates, updateSubTask } from "@/actions/actions";
+import {
+  notifyUpdates,
+  updateSubTask,
+  updateTaskStatus,
+} from "@/actions/actions";
 import { useUserContext } from "@/context/UserContext";
 import { useAuth } from "@/hooks/useAuth";
 import { Task } from "@/lib/types";
@@ -15,6 +19,20 @@ function TaskDisplay({ task }: { task: Task }) {
   const { userData } = useUserContext();
 
   const { user } = useAuth();
+
+  const updateTaskStatusHandler = async () => {
+    await updateTaskStatus({
+      taskId: task.taskId,
+      newTaskStatus: true,
+    }).then((result) => {
+      if (result && user) {
+        notifyUpdates({
+          userId: user.uid,
+          taskId: task.taskId,
+        });
+      }
+    });
+  };
 
   const updateSubTasks = async ({
     taskId,
@@ -52,20 +70,37 @@ function TaskDisplay({ task }: { task: Task }) {
   };
 
   return (
-    <div
-      className="flex flex-col bg-white rounded shadow-lg p-2 my-2 "
-    >
+    <div className="flex flex-col bg-white rounded shadow-lg p-2 my-2 ">
       <div className="flex flex-row gap-4 items-center">
         <span className="text-xl">{task.taskName}</span>
         <span className="text-md bg-teal-600 text-white rounded p-1">
           {task.list}
         </span>
+        <div className="ml-auto">
+
+            {userData?.tasks.filter((taskHere) => taskHere.taskId===task.taskId).at(0)?.status? "true" : "false"}
+          {/* <span className="text-black">{task.status ? "true" : "false"}</span> */}
+          {task.status ? (
+            <span className="bg-green-500 text-white rounded p-1 border-2 border-green-800">
+              Completed
+            </span>
+          ) : (
+            <button
+              className="bg-cyan-400 rounded border-2 border-cyan-900 hover:bg-cyan-600 p-1 text-white"
+              onClick={() => updateTaskStatusHandler()}
+            >
+              Mark Done
+            </button>
+          )}
+        </div>
       </div>
       <div className="flex-1 py-2">
         {task.tags?.map((tag) => (
           <span
             key={tag}
-            className="bg-teal-100 rounded p-2 text-sm font-serif m-1"
+            className={`${
+              tag === "Important" ? "bg-red-400" : "bg-gray-200"
+            } rounded p-2 text-sm font-serif m-1 border border-black`}
           >
             {tag}
           </span>

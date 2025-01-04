@@ -167,6 +167,31 @@ export async function updateSubTask({
   }
 }
 
+export async function updateTaskStatus({
+  taskId,
+  newTaskStatus,
+}: {
+  taskId: string;
+  newTaskStatus: boolean;
+}): Promise<boolean> {
+  if (!taskId) {
+    console.error("taskId not provided");
+    return false;
+  }
+  try {
+    await adminDb.collection("tasks").doc(taskId).set(
+      {
+        status: newTaskStatus,
+      },
+      { merge: true }
+    );
+    return true;
+  } catch (error) {
+    console.error("Could'nt update status of task", error);
+    return false;
+  }
+}
+
 export async function notifyUpdates({
   userId,
   taskId,

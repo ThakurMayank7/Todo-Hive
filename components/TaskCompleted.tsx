@@ -5,7 +5,7 @@ import { useUserContext } from "@/context/UserContext";
 function TaskCompleted() {
   const { userData } = useUserContext();
   return (
-    <div className="w-full h-full bg-emerald-500 rounded p-2 shadow-sm">
+    <div className="w-full h-full bg-emerald-500 rounded p-2 shadow-md shadow-black">
       <h1 className="text-white dark:text-white text-center text-xl">
         Tasks Completed
       </h1>

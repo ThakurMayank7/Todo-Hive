@@ -7,11 +7,11 @@ function DueTasks() {
   const { userData } = useUserContext();
 
   return (
-    <div className="w-full h-full bg-amber-400 rounded p-2 shadow-sm">
+    <div className="w-full h-full bg-amber-400 rounded p-2 shadow-md shadow-black">
       <h1 className="text-white dark:text-white text-center text-xl">
         Due Tasks
       </h1>
-      <p className="whitespace-pre-wrap text-8xl font-medium tracking-tighter text-green-500 dark:text-white text-center mb-1">
+      <p className="whitespace-pre-wrap text-8xl font-medium tracking-tighter text-white dark:text-white text-center mb-1">
         {userData?.tasks.filter(
           (task) => CheckUpcomingDate(task.dueDate) && task.status === false
         ).length === 0 ? (

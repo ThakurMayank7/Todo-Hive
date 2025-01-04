@@ -40,7 +40,6 @@ function ClientLayout({
             const taskId: string = data.taskId;
 
             if (taskId) {
-              console.log("Snapshot data received:", taskId);
 
               const fetchUpdatedTask = async () => {
                 const taskSnapshot = await getDoc(doc(db, "tasks", taskId));
@@ -67,14 +66,10 @@ function ClientLayout({
                     return task;
                   });
 
-                  console.log(tasksToPush);
-
                   updateUserDataRef.current({
                     tasks: tasksToPush,
                   });
                 }
-
-                console.log(taskSnapshot.data());
               };
               fetchUpdatedTask();
             }
@@ -98,7 +93,6 @@ function ClientLayout({
         async (snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.data();
-            console.log("Snapshot data received:", data);
 
             const taskIds: string[] = data.tasks;
 
@@ -107,8 +101,6 @@ function ClientLayout({
               userData?.tasks.map((task) => task.taskId)
             );
             const newTaskIds = taskIds.filter((id) => !existingTaskIds.has(id));
-
-            console.log("Fetching new tasks for IDs:", newTaskIds);
 
             const tasksToPush = await Promise.all(
               newTaskIds.map(async (taskId) => {
@@ -136,8 +128,6 @@ function ClientLayout({
             const validTasks: Task[] = tasksToPush.filter(
               (task): task is Task => task !== null
             );
-
-            console.log("New tasks fetched:", validTasks);
 
             // Update userData
             updateUserDataRef.current({
@@ -171,7 +161,7 @@ function ClientLayout({
           <div className="h-[90vh] pt-2">
             <div className="flex flex-row h-full">
               <Sidebar />
-              <div className="mx-2 bg-teal-600 border-2 border-teal-900 flex-1 p-4 rounded-lg shadow-lg shadow-black h-full w-full">
+              <div className="mx-2 bg-white border-2 border-teal-900 flex-1 p-4 rounded-lg shadow-lg shadow-black h-full w-full">
                 <>{children}</>
               </div>
             </div>

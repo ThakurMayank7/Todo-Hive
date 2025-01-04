@@ -13,7 +13,7 @@ function Sidebar() {
   const router = useRouter();
 
   return (
-    <ScrollArea className="h-full bg-teal-600 border-2 border-teal-900 shadow-md shadow-black rounded-r-lg w-60 text-white p-4 flex flex-col">
+    <ScrollArea className="h-full bg-gray-600 border-2 border-teal-900 shadow-md shadow-black rounded-r-lg w-60 text-white p-4 flex flex-col">
       <SearchBar />
       <br />
       <SidebarOptions />
