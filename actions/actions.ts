@@ -169,14 +169,12 @@ export async function updateSubTask({
 
 export async function notifyUpdates({
   userId,
-  updateMessage,
   taskId,
 }: {
   userId: string;
-  updateMessage: string;
   taskId: string;
 }): Promise<boolean> {
-  if (!userId || !updateMessage) {
+  if (!userId) {
     console.error("userId or updateMessage not provided");
     return false;
   }
@@ -184,6 +182,7 @@ export async function notifyUpdates({
     await adminDb.collection("taskUpdates").doc(userId).set(
       {
         taskId: taskId,
+        timestamp: Timestamp.now(),
       },
       { merge: true }
     );

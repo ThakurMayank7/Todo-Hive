@@ -29,25 +29,30 @@ function ClientLayout({
     updateUserDataRef.current = updateUserData;
   }, [updateUserData]);
 
+  useEffect(() => {
+    if (user && !loading) {
+      const unsubscribeUpdateListener = onSnapshot(
+        doc(db, "taskUpdates", user.uid),
+        (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.data();
 
-  useEffect(()=>{
-    if(user && !loading){
-      const unsubscribeUpdateListener = onSnapshot(doc(db, "updates", user.uid), (snapshot) => {
-        if(snapshot.exists()){
-          const data = snapshot.data();
-          console.log("Snapshot data received:", data);
-          // updateUserDataRef.current({
-          //   tasks: data.tasks || [],
-          //   lists: data.lists || [],
-          //   tags: data.tags || [],
-          // });
-        }else{
-          console.warn("No updates found for the user.");
+            const taskId: string = data.taskId;
+
+            if (taskId) {
+              console.log("Snapshot data received:", taskId);
+            }
+          } else {
+            console.warn("No updates found for the user.");
+          }
+        },
+        (error) => {
+          console.error("Error listening to taskUpdates:", error);
         }
-      });
+      );
       return () => unsubscribeUpdateListener();
     }
-  },[user,loading])
+  }, [user, loading]);
 
   useEffect(() => {
     if (user && !loading) {

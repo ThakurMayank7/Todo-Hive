@@ -46,7 +46,6 @@ function UpcomingTasks() {
             notifyUpdates({
               userId: user.uid,
               taskId: taskId,
-              updateMessage: "Subtask updated.",
             });
           }
         });
@@ -99,13 +98,12 @@ function UpcomingTasks() {
                         {subtask.sStatus ? "true" : "false"}
                         {subtask.sStatus ? (
                           <IoIosCheckbox
-                          // onClick={() => {
-                          //   updateSubTask({
-                          //     taskId: task.taskId,
-                          //     subTask: subtask.sTask,
-                          //     status: !subtask.sStatus,
-                          //   });
-                          // }}
+                          onClick={() =>
+                            updateSubTasks({
+                              taskId: task.taskId,
+                              subTask: subtask.sTask,
+                            })
+                          }
                           />
                         ) : (
                           <MdOutlineCheckBoxOutlineBlank
