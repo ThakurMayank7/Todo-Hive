@@ -9,7 +9,7 @@ import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Task } from "@/lib/types";
+import { Task, UserData } from "@/lib/types";
 import Spinner from "@/components/Spinner";
 
 function ClientLayout({
@@ -25,6 +25,13 @@ function ClientLayout({
 
   const [fetching, setFetching] = useState<boolean>(false);
 
+  const latestUserDataRef = useRef<UserData | null>(null);
+
+  // Sync the ref with the latest userData whenever it changes
+  useEffect(() => {
+    latestUserDataRef.current = userData;
+  }, [userData]);
+
   useEffect(() => {
     updateUserDataRef.current = updateUserData;
   }, [updateUserData]);
@@ -39,10 +46,10 @@ function ClientLayout({
             const data = snapshot.data();
 
             const taskIds: string[] = data.tasks;
-
+            const latestUserData = latestUserDataRef.current;
             // Check for tasks not already in userData
             const existingTaskIds = new Set(
-              userData?.tasks.map((task) => task.taskId)
+              latestUserData?.tasks.map((task) => task.taskId)
             );
             const newTaskIds = taskIds.filter((id) => !existingTaskIds.has(id));
 
@@ -75,7 +82,7 @@ function ClientLayout({
 
             // Update userData
             updateUserDataRef.current({
-              tasks: [...(userData?.tasks || []), ...validTasks],
+              tasks: [...(latestUserData?.tasks || []), ...validTasks],
               lists: data.lists || [],
               tags: data.tags || [],
             });
@@ -94,8 +101,14 @@ function ClientLayout({
             const taskId: string = data.taskId;
 
             console.log("taskUpdates data:", data);
-            console.log("tasks existing:", userData?.tasks);
-            if (taskId) {
+
+            const latestUserData = latestUserDataRef.current;
+            console.log(
+              "tasks existing in latestUserDataRef:",
+              latestUserData?.tasks
+            );
+
+            if (taskId && latestUserData) {
               try {
                 // Fetch updated task
                 const taskDocRef = doc(db, "tasks", taskId);
@@ -105,8 +118,8 @@ function ClientLayout({
                   const updatedTask = taskSnapshot.data();
 
                   console.log("Updated task:", updatedTask);
-                  console.log("existing tasks:", userData?.tasks);
-                  const tasksToPush = userData?.tasks.map((task: Task) => {
+
+                  const tasksToPush = latestUserData.tasks.map((task: Task) => {
                     if (task.taskId === taskId) {
                       return {
                         ...task,

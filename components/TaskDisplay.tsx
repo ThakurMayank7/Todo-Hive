@@ -77,9 +77,6 @@ function TaskDisplay({ task }: { task: Task }) {
           {task.list}
         </span>
         <div className="ml-auto">
-
-            {userData?.tasks.filter((taskHere) => taskHere.taskId===task.taskId).at(0)?.status? "true" : "false"}
-          {/* <span className="text-black">{task.status ? "true" : "false"}</span> */}
           {task.status ? (
             <span className="bg-green-500 text-white rounded p-1 border-2 border-green-800">
               Completed
