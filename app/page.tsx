@@ -9,6 +9,7 @@ import React, { useEffect } from "react";
 import { createNewUser } from "@/actions/actions";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
+import Spinner from "@/components/Spinner";
 
 export default function Home() {
   const router = useRouter();
@@ -50,16 +51,26 @@ export default function Home() {
 
   return (
     <div>
+      {user?
+    <div>
+      <h1>Redirecting you to Home Page...</h1>
+      <Spinner/>
+    </div>
+    
+    :  
+    <>
       <h1>Start by creating your account</h1>
       <GoogleIcon />
 
       <button
-        className="bg-white text-xl p-2 rounded flex gap-2 items-center border-2 border-black hover:text-2xl"
-        onClick={() => signInWithGoogle()}
+      className="bg-white text-xl p-2 rounded flex gap-2 items-center border-2 border-black hover:text-2xl"
+      onClick={() => signInWithGoogle()}
       >
         <LogInIcon />
         Sign In with Google
       </button>
+    </>
+      }
     </div>
   );
 }

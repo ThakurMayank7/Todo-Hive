@@ -6,12 +6,36 @@ import CategoryChart from "@/components/CategoryChart";
 import DueTasks from "@/components/DueTasks";
 import OverdueTasks from "@/components/OverdueTasks";
 import RecentlyAddedTasks from "@/components/RecentlyAddedTasks";
+import Spinner from "@/components/Spinner";
 import TaskCompleted from "@/components/TaskCompleted";
 import UpcomingTasks from "@/components/UpcomingTasks";
+import { useAuth } from "@/hooks/useAuth";
 import { Plus } from "lucide-react";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 function HomePage() {
+  const { user, loading } = useAuth();
+
+  const router = useRouter();
+
+  const [redirecting, setRedirecting] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!user && !loading) {
+      setRedirecting(true);
+      router.push("/");
+    }
+  }, [user, loading, router]);
+
+  if (loading || redirecting) {
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
+  }
+
   return (
     <div className="h-full w-full">
       <div className="flex flex-row gap-2 h-1/5 w-full">
