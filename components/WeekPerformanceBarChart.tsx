@@ -8,7 +8,7 @@ function WeekPerformanceBarChart({ tasks }: { tasks: Task[] }) {
   const completed: number[] = [];
   const missed: number[] = [];
   const labels: string[] = [];
-const curr=new Date().getTime()
+  const curr = new Date().getTime();
   for (let i = 0; i < 7; i++) {
     completed.push(
       tasks.filter(
@@ -26,8 +26,8 @@ const curr=new Date().getTime()
   }
 
   const uData = missed;
-const pData = completed;
-const xLabels = labels;
+  const pData = completed;
+  const xLabels = labels;
 
   return (
     // <BarChart
@@ -38,10 +38,10 @@ const xLabels = labels;
     <BarChart
       height={500}
       series={[
-        { data: pData, label: 'Completed Tasks', id: 'pvId' },
-        { data: uData, label: 'Missed Tasks', id: 'uvId' },
+        { data: pData, label: "Completed Tasks", id: "pvId" },
+        { data: uData, label: "Missed Tasks", id: "uvId" },
       ]}
-      xAxis={[{ data: xLabels, scaleType: 'band' }]}
+      xAxis={[{ data: xLabels, scaleType: "band" }]}
     />
   );
 }
