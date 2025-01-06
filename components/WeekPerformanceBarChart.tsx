@@ -30,11 +30,6 @@ function WeekPerformanceBarChart({ tasks }: { tasks: Task[] }) {
   const xLabels = labels;
 
   return (
-    // <BarChart
-    //   height={500}
-    //   series={series}
-    //   xAxis={[{ scaleType: "band", data: labels },{label: "Days"}]}
-    // />
     <BarChart
       height={500}
       series={[
