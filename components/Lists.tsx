@@ -10,7 +10,7 @@ function Lists() {
   return (
     <div>
       <h1 className="text-center text-xl">Lists</h1>
-      <Separator className="my-2"/>
+      <Separator className="my-2" />
 
       <div className="p-2 flex flex-col gap-1 text-black">
         {userData &&
