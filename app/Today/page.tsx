@@ -3,6 +3,7 @@
 import Spinner from "@/components/Spinner";
 import TaskDetailedView from "@/components/TaskDetailedView";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import TypingAnimation from "@/components/ui/typing-animation";
 import { useUserContext } from "@/context/UserContext";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -34,9 +35,9 @@ function Today() {
 
   return (
     <>
-      <h1 className="text-xl font-serif text-center">
-        Your Tasks for Today :{" "}
-      </h1>
+      <TypingAnimation className="font-serif text-center">
+        Your Tasks for Today :
+      </TypingAnimation>
       <ScrollArea className="">
         {userData && userData.tasks && userData.tasks.length > 0 ? (
           userData.tasks.map((task) => (
