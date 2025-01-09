@@ -183,7 +183,7 @@ function ClientLayout({
           <div className="h-[90vh] pt-2">
             <div className="flex flex-row h-full">
               <Sidebar />
-              <div className="mx-2 bg-white border-2 border-teal-900 flex-1 p-4 rounded-lg shadow-lg shadow-black h-full w-full">
+              <div className="mx-2 bg-gray-700 border-2 border-black flex-1 p-4 rounded-lg shadow-lg shadow-black h-full w-full">
                 <>{children}</>
               </div>
             </div>

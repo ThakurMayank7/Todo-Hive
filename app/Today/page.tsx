@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import TypingAnimation from "@/components/ui/typing-animation";
 import { useUserContext } from "@/context/UserContext";
 import { useAuth } from "@/hooks/useAuth";
+import { CheckCurrentDate } from "@/lib/utils/functions";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -34,22 +35,26 @@ function Today() {
   }
 
   return (
-    <>
-      <TypingAnimation className="font-serif text-center">
-        Your Tasks for Today :
-      </TypingAnimation>
-      <ScrollArea className="">
+    <ScrollArea className="h-full w-full">
+      <div className="sticky top-0 bg-gray-700 bg-opacity-95 z-10 flex items-center justify-center py-2">
+        <TypingAnimation className="text-gray-100 font-serif text-center">
+          Your Tasks for Today:
+        </TypingAnimation>
+      </div>
+
+      <div className="px-4">
         {userData && userData.tasks && userData.tasks.length > 0 ? (
-          userData.tasks.map((task) => (
-            <TaskDetailedView key={task.taskId} task={task} />
-          ))
+          userData.tasks
+            .filter((task) => CheckCurrentDate(task.dueDate))
+            .sort((a, b) => Number(a.status) - Number(b.status))
+            .map((task) => <TaskDetailedView key={task.taskId} task={task} />)
         ) : (
-          <div className="mt-96">
+          <div className="mt-96 flex justify-center">
             <span className="text-2xl font-semibold">No Tasks for Today</span>
           </div>
         )}
-      </ScrollArea>
-    </>
+      </div>
+    </ScrollArea>
   );
 }
 

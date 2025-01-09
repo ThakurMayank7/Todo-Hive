@@ -13,7 +13,7 @@ function Sidebar() {
   const router = useRouter();
 
   return (
-    <ScrollArea className="h-full bg-gray-600 border-2 border-teal-900 shadow-md shadow-black rounded-r-lg w-60 text-white p-4 flex flex-col">
+    <ScrollArea className="h-full bg-gray-700 border-2 border-teal-900 shadow-md shadow-black rounded-r-lg w-60 text-white p-4 flex flex-col">
       <SearchBar />
       <br />
       <SidebarOptions />
@@ -24,7 +24,7 @@ function Sidebar() {
       <div className="mt-auto flex flex-col gap-2">
         <Separator className="mt-20" />
         <button
-          className="border border-black text-2xl bg-white text-black p-2 hover:font-semibold hover:bg-gray-200"
+          className="border border-black text-2xl bg-gray-100 text-black p-2 hover:font-semibold hover:bg-gray-200"
           onClick={() => router.push("/Settings")}
         >
           Settings
