@@ -3,6 +3,8 @@
 import Spinner from "@/components/Spinner";
 import TaskDetailedView from "@/components/TaskDetailedView";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import SparklesText from "@/components/ui/sparkles-text";
 import TypingAnimation from "@/components/ui/typing-animation";
 import { useUserContext } from "@/context/UserContext";
 import { useAuth } from "@/hooks/useAuth";
@@ -41,13 +43,32 @@ function Today() {
           Your Tasks for Today:
         </TypingAnimation>
       </div>
-
-      <div className="px-4">
+      <div className="px-4 flex-1">
         {userData && userData.tasks && userData.tasks.length > 0 ? (
           userData.tasks
-            .filter((task) => CheckCurrentDate(task.dueDate))
-            .sort((a, b) => Number(a.status) - Number(b.status))
-            .map((task) => <TaskDetailedView key={task.taskId} task={task} />)
+            .filter((task) => CheckCurrentDate(task.dueDate) && !task.status)
+            .map((task) => (
+              <div key={task.taskId} className="inline-block w-1/3 px-4 py-1">
+                <TaskDetailedView task={task} />
+              </div>
+            ))
+        ) : (
+          <div className="mt-96 flex justify-center">
+            <span className="text-2xl font-semibold">No Tasks for Today</span>
+          </div>
+        )}
+      </div>
+      <Separator className="my-1" />
+      <SparklesText text="COMPLETED :" className="text-green-500 ml-4 my-2" />
+      <div className="px-4 flex-1">
+        {userData && userData.tasks && userData.tasks.length > 0 ? (
+          userData.tasks
+            .filter((task) => CheckCurrentDate(task.dueDate) && task.status)
+            .map((task) => (
+              <div key={task.taskId} className="inline-block w-1/3 px-4 py-1">
+                <TaskDetailedView task={task} />
+              </div>
+            ))
         ) : (
           <div className="mt-96 flex justify-center">
             <span className="text-2xl font-semibold">No Tasks for Today</span>

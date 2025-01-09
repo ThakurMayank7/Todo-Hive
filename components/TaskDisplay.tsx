@@ -1,12 +1,9 @@
 "use client";
 
-import {
-  notifyUpdates,
-  updateSubTask,
-  updateTaskStatus,
-} from "@/actions/actions";
+import { notifyUpdates, updateSubTask } from "@/actions/actions";
 import { useUserContext } from "@/context/UserContext";
 import { useAuth } from "@/hooks/useAuth";
+import { updateTaskStatusHandler } from "@/lib/databaseUpdates";
 import { Task } from "@/lib/types";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
@@ -20,20 +17,6 @@ function TaskDisplay({ task }: { task: Task }) {
   const { userData } = useUserContext();
 
   const { user } = useAuth();
-
-  const updateTaskStatusHandler = async () => {
-    await updateTaskStatus({
-      taskId: task.taskId,
-      newTaskStatus: true,
-    }).then((result) => {
-      if (result && user) {
-        notifyUpdates({
-          userId: user.uid,
-          taskId: task.taskId,
-        });
-      }
-    });
-  };
 
   const updateSubTasks = async ({
     taskId,
@@ -85,7 +68,14 @@ function TaskDisplay({ task }: { task: Task }) {
           ) : (
             <button
               className="bg-cyan-400 rounded border-2 border-cyan-900 hover:bg-cyan-600 p-1 text-white"
-              onClick={() => updateTaskStatusHandler()}
+              onClick={() => {
+                if (user) {
+                  updateTaskStatusHandler({
+                    taskId: task.taskId,
+                    userId: user.uid,
+                  });
+                }
+              }}
             >
               Mark Done
             </button>
