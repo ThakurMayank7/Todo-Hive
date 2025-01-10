@@ -48,7 +48,7 @@ function Today() {
           userData.tasks
             .filter((task) => CheckCurrentDate(task.dueDate) && !task.status)
             .map((task) => (
-              <div key={task.taskId} className="inline-block w-1/3 px-4 py-1">
+              <div key={task.taskId} className="inline-block w-1/3 px-4 py-4">
                 <TaskDetailedView task={task} />
               </div>
             ))
@@ -65,7 +65,7 @@ function Today() {
           userData.tasks
             .filter((task) => CheckCurrentDate(task.dueDate) && task.status)
             .map((task) => (
-              <div key={task.taskId} className="inline-block w-1/3 px-4 py-1">
+              <div key={task.taskId} className="inline-block w-1/3 px-4 py-4">
                 <TaskDetailedView task={task} />
               </div>
             ))

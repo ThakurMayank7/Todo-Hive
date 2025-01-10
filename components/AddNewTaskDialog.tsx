@@ -287,13 +287,6 @@ function AddNewTaskDialog({
                               {list}
                             </SelectItem>
                           ))}
-                        {/* <SelectItem value="Personal">Personal</SelectItem>
-                        <SelectItem value="Work">Work</SelectItem>
-                        <SelectItem value="Hobby">Hobby</SelectItem>
-                        <SelectItem value="Something New">
-                          Something New
-                        </SelectItem>
-                        <SelectItem value="Trying">Trying</SelectItem> */}
                       </SelectGroup>
                     </SelectContent>
                   </Select>

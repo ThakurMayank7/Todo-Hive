@@ -25,12 +25,13 @@ function TaskDisplay({ task }: { task: Task }) {
     taskId: string;
     subTask: string;
   }) => {
-    const copy: Task[] =
-      userData?.tasks.filter((task: Task) => task.taskId === taskId) || [];
+    const copy: Task | undefined = userData?.tasks
+      .filter((task: Task) => task.taskId === taskId)
+      .at(0);
 
-    if (copy !== undefined && copy.length !== 0) {
+    if (copy !== undefined) {
       const newSubTasks: { sTask: string; sStatus: boolean }[] =
-        copy[0].subTasks?.map((sub) => {
+        copy.subTasks?.map((sub) => {
           if (sub.sTask === subTask) {
             sub.sStatus = !sub.sStatus;
           }
