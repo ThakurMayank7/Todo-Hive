@@ -30,14 +30,20 @@ function WeekPerformanceBarChart({ tasks }: { tasks: Task[] }) {
   const xLabels = labels;
 
   return (
-    <BarChart
-      height={500}
-      series={[
-        { data: pData, label: "Completed Tasks", id: "pvId" },
-        { data: uData, label: "Missed Tasks", id: "uvId" },
-      ]}
-      xAxis={[{ data: xLabels, scaleType: "band" }]}
-    />
+    <>
+      <h1 className="text-2xl font-bold text-white text-center my-2">
+        Week Performance
+      </h1>
+      <BarChart
+        className="bg-gray-100 rounded"
+        height={500}
+        series={[
+          { data: pData, label: "Completed Tasks", id: "pvId" },
+          { data: uData, label: "Missed Tasks", id: "uvId" },
+        ]}
+        xAxis={[{ data: xLabels, scaleType: "band" }]}
+      />
+    </>
   );
 }
 

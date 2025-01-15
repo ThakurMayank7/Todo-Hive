@@ -8,6 +8,7 @@ import WeekPerformanceBarChart from "@/components/WeekPerformanceBarChart";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Spinner from "@/components/Spinner";
+import OverallPerformance from "@/components/OverallPerformance";
 
 function PerformancePage() {
   const { userData } = useUserContext();
@@ -42,7 +43,8 @@ function PerformancePage() {
   }
 
   return (
-    <ScrollArea>
+    <ScrollArea className="h-full">
+      <OverallPerformance />
       <WeekPerformanceBarChart tasks={userData.tasks} />
     </ScrollArea>
   );

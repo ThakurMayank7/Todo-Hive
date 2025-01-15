@@ -33,7 +33,7 @@ function TaskDetailedView({ task }: { task: Task }) {
           <span className="text-sm text-gray-500 ml-2 rounded border border-black p-0.5">
             {task.list}
           </span>
-          <Separator />
+          <Separator className="mt-2 bg-black" />
         </CardTitle>
         <CardDescription>{task.taskDescription}</CardDescription>
       </CardHeader>
